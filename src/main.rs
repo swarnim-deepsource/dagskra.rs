@@ -1,5 +1,5 @@
+mod handler;
 mod ruv;
-mod template;
 
 use axum::{routing, Router, Server};
 use axum_extra::routing::SpaRouter;
@@ -18,8 +18,8 @@ async fn main() {
     let spa = SpaRouter::new("/static", "./static");
     let app = Router::new()
         .merge(spa)
-        .route("/", routing::get(template::index))
-        .route("/_schedule", routing::get(template::schedule))
+        .route("/", routing::get(handler::index))
+        .route("/_schedule", routing::get(handler::schedule))
         .layer(TraceLayer::new_for_http());
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     tracing::debug!("Listening on {}", addr);
