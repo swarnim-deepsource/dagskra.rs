@@ -4,41 +4,28 @@ use axum::{
     response::{Html, IntoResponse, Response},
 };
 
-use super::ruv::{get_shows, Shows, Status};
-
-const AUTHOR: &str = "Paul Burt";
-const EMAIL: &str = "paul.burt@bbc.co.uk";
-const TITLE: &str = "Dagskrá RÚV";
+use super::show::{get_shows, Shows, Status};
 
 #[derive(Template)]
 #[template(path = "index.html")]
 struct IndexTemplate {
     author: &'static str,
     email: &'static str,
+    shows: Shows,
     title: &'static str,
     today: String,
 }
 
 pub async fn index() -> impl IntoResponse {
+    let shows = get_shows().await.unwrap_or_default();
     let today = chrono::Utc::now().format("%d.%m.%Y").to_string();
     let template = IndexTemplate {
-        author: AUTHOR,
-        email: EMAIL,
-        title: TITLE,
+        author: "Paul Burt",
+        email: "paul.burt@bbc.co.uk",
+        title: "Dagskrá RÚV",
+        shows,
         today,
     };
-    HtmlTemplate(template)
-}
-
-#[derive(Template)]
-#[template(path = "schedule.html")]
-struct ScheduleTemplate {
-    shows: Shows,
-}
-
-pub async fn schedule() -> impl IntoResponse {
-    let shows = get_shows().await.unwrap_or_default();
-    let template = ScheduleTemplate { shows };
     HtmlTemplate(template)
 }
 
