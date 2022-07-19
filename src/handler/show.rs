@@ -10,8 +10,8 @@ pub enum Status {
 #[derive(Debug, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Show {
     #[serde(rename = "startTime", deserialize_with = "de_datetime")]
-    start_time: NaiveDateTime,
-    title: String,
+    pub start_time: NaiveDateTime,
+    pub title: String,
     description: String,
     live: bool,
 }
@@ -21,15 +21,19 @@ impl Show {
         self.description.trim().ends_with(" e.")
     }
 
-    pub fn get_description(&self) -> &str {
+    pub fn date(&self) -> String {
+        self.start_time.format("%d.%m.%Y").to_string()
+    }
+
+    pub fn description(&self) -> &str {
         self.description.trim().trim_end_matches(" e.")
     }
 
-    pub fn get_start_time(&self) -> String {
-        self.start_time.format("%H:%M").to_string()
+    pub fn has_description(&self) -> bool {
+        !self.description.trim().is_empty()
     }
 
-    pub fn get_status(&self) -> Status {
+    pub fn status(&self) -> Status {
         match (self.live, self.is_repeat()) {
             (true, _) => Status::Live,
             (false, true) => Status::Repeat,
@@ -37,12 +41,8 @@ impl Show {
         }
     }
 
-    pub fn get_title(&self) -> &str {
-        self.title.trim()
-    }
-
-    pub fn has_description(&self) -> bool {
-        !self.description.trim().is_empty()
+    pub fn time(&self) -> String {
+        self.start_time.format("%H:%M").to_string()
     }
 }
 
@@ -65,7 +65,7 @@ struct Response {
 
 pub async fn get_shows() -> Result<Shows, Box<dyn std::error::Error>> {
     let url = "https://apis.is/tv/ruv";
-    tracing::debug!("Fetching schedule data from {}", url);
+    tracing::debug!("fetching schedule data from {}", url);
     let res: Response = reqwest::get(url).await?.json().await?;
     Ok(res.results)
 }

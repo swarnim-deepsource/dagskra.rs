@@ -1,5 +1,4 @@
 mod handler;
-mod show;
 
 use axum::{routing, Router, Server};
 use axum_extra::routing::SpaRouter;
@@ -21,7 +20,7 @@ async fn main() {
         .route("/", routing::get(handler::index))
         .layer(TraceLayer::new_for_http());
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
-    tracing::debug!("Listening on {}", addr);
+    tracing::debug!("listening on {}", addr);
     Server::bind(&addr)
         .serve(app.into_make_service())
         .await
