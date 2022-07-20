@@ -20,7 +20,7 @@ struct IndexTemplate {
 
 pub async fn index() -> impl IntoResponse {
     let shows = get_shows().await.unwrap_or_default();
-    let today = shows.first().map_or(String::from(""), |s| s.date());
+    let today = shows.first().map_or("".to_owned(), |s| s.date());
     let template = IndexTemplate {
         author: "Paul Burt",
         email: "paul.burt@bbc.co.uk",
