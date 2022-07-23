@@ -1,5 +1,2 @@
 [workspace]
-members = [
-  "dagskra-lib",
-  "dagskra-web",
-]
+members = ["dagskra-lib", "dagskra-web"]

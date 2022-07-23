@@ -4,7 +4,6 @@ use axum::{
     response::{Html, IntoResponse, Response},
     routing, Router, Server,
 };
-use axum_extra::routing::SpaRouter;
 use std::net::SocketAddr;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
@@ -19,9 +18,7 @@ async fn main() {
         )))
         .with(tracing_subscriber::fmt::layer())
         .init();
-    let assets = SpaRouter::new("/static", "./assets");
     let app = Router::new()
-        .merge(assets)
         .route("/", routing::get(index))
         .layer(TraceLayer::new_for_http());
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
@@ -43,6 +40,7 @@ struct IndexTemplate {
 }
 
 async fn index() -> impl IntoResponse {
+    tracing::debug!("fetching data from external API");
     let shows = get_shows().await.unwrap_or_default();
     let today = shows.first().map_or("".into(), |s| s.date());
     let template = IndexTemplate {

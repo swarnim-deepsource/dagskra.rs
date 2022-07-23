@@ -1,7 +1,8 @@
 [package]
+description = "Library support for dagskra-web"
 edition = "2021"
 name = "dagskra-lib"
-version = "0.2.0"
+version = "0.1.0"
 
 [dependencies]
 chrono = "0.4"
