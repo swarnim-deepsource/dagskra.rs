@@ -65,7 +65,6 @@ struct Response {
 
 pub async fn get_shows() -> Result<Shows, Box<dyn std::error::Error>> {
     let url = "https://apis.is/tv/ruv";
-    tracing::debug!("fetching schedule data from {}", url);
     let res: Response = reqwest::get(url).await?.json().await?;
     Ok(res.results)
 }
