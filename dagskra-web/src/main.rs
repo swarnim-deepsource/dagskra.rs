@@ -5,19 +5,19 @@ use axum::{
     routing, Router, Server,
 };
 use axum_extra::routing::SpaRouter;
-use std::{env, net::SocketAddr};
+use std::net::SocketAddr;
 use tower_http::trace::TraceLayer;
-use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 use dagskra_lib::{get_shows, Shows, Status};
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::registry()
-        .with(EnvFilter::new(
-            env::var("RUST_LOG").unwrap_or_else(|_| "axum_ruv=debug,tower_http=trace".into()),
-        ))
-        .with(fmt::layer())
+        .with(EnvFilter::new(std::env::var("RUST_LOG").unwrap_or_else(
+            |_| "dagskra_web=debug,tower_http=trace".into(),
+        )))
+        .with(tracing_subscriber::fmt::layer())
         .init();
     let assets = SpaRouter::new("/static", "./assets");
     let app = Router::new()
