@@ -19,7 +19,7 @@ async fn main() {
         ))
         .with(fmt::layer())
         .init();
-    let assets = SpaRouter::new("/static", "./static");
+    let assets = SpaRouter::new("/static", "./assets");
     let app = Router::new()
         .merge(assets)
         .route("/", routing::get(index))
