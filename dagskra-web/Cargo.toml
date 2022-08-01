@@ -2,7 +2,7 @@
 description = "dagskra-web web application"
 edition = "2021"
 name = "dagskra-web"
-version = "0.2.0"
+version = "0.2.1"
 
 [dependencies]
 askama = "0.11"

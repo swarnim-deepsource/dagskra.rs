@@ -59,12 +59,12 @@ where
 pub type Schedule = Vec<Listing>;
 
 #[derive(Deserialize)]
-struct Response {
+struct APIResponse {
     results: Schedule,
 }
 
 pub async fn fetch_schedule() -> Result<Schedule, Box<dyn std::error::Error>> {
     let url = "https://apis.is/tv/ruv";
-    let res: Response = reqwest::get(url).await?.json().await?;
+    let res: APIResponse = reqwest::get(url).await?.json().await?;
     Ok(res.results)
 }
