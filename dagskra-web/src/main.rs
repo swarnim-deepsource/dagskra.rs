@@ -8,7 +8,7 @@ use std::net::SocketAddr;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
-use dagskra_lib::{get_shows, Shows, Status};
+use dagskra_lib::{fetch_schedule, Schedule, Status};
 
 #[tokio::main]
 async fn main() {
@@ -34,20 +34,20 @@ async fn main() {
 struct IndexTemplate {
     author: &'static str,
     email: &'static str,
-    shows: Shows,
+    schedule: Schedule,
     title: &'static str,
-    today: String,
+    today: Option<String>,
 }
 
 async fn index() -> impl IntoResponse {
     tracing::debug!("fetching data from external API");
-    let shows = get_shows().await.unwrap_or_default();
-    let today = shows.first().map_or("".into(), |s| s.date());
+    let schedule = fetch_schedule().await.unwrap_or_default();
+    let today = schedule.first().map(|l| l.date());
     let template = IndexTemplate {
         author: "Paul Burt",
         email: "paul.burt@bbc.co.uk",
+        schedule,
         title: "Dagskrá RÚV",
-        shows,
         today,
     };
     HtmlTemplate(template)

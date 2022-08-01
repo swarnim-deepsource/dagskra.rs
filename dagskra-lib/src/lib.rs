@@ -8,7 +8,7 @@ pub enum Status {
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Show {
+pub struct Listing {
     #[serde(rename = "startTime", deserialize_with = "de_datetime")]
     pub start_time: NaiveDateTime,
     pub title: String,
@@ -16,7 +16,7 @@ pub struct Show {
     live: bool,
 }
 
-impl Show {
+impl Listing {
     fn is_repeat(&self) -> bool {
         self.description.trim().ends_with(" e.")
     }
@@ -56,14 +56,14 @@ where
     Ok(dt)
 }
 
-pub type Shows = Vec<Show>;
+pub type Schedule = Vec<Listing>;
 
 #[derive(Deserialize)]
 struct Response {
-    results: Shows,
+    results: Schedule,
 }
 
-pub async fn get_shows() -> Result<Shows, Box<dyn std::error::Error>> {
+pub async fn fetch_schedule() -> Result<Schedule, Box<dyn std::error::Error>> {
     let url = "https://apis.is/tv/ruv";
     let res: Response = reqwest::get(url).await?.json().await?;
     Ok(res.results)
