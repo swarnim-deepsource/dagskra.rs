@@ -23,7 +23,7 @@ impl Listing {
     fn is_repeat(&self) -> bool {
         self.description
             .as_ref()
-            .map_or(false, |d| d.trim().ends_with(" e."))
+            .map_or(false, |s| s.trim().ends_with(" e."))
     }
 
     pub fn date(&self) -> String {
@@ -33,7 +33,7 @@ impl Listing {
     pub fn description(&self) -> &str {
         self.description
             .as_ref()
-            .map_or("", |d| d.trim().trim_end_matches(" e."))
+            .map_or("", |s| s.trim().trim_end_matches(" e."))
     }
 
     pub fn has_description(&self) -> bool {
