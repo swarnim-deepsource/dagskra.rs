@@ -1,5 +1,6 @@
 use chrono::NaiveDateTime;
 use serde::{de::Error, Deserialize, Deserializer};
+use serde_with::{serde_as, NoneAsEmptyString};
 
 pub enum Status {
     Live,
@@ -7,18 +8,22 @@ pub enum Status {
     Standard,
 }
 
+#[serde_as]
 #[derive(Debug, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Listing {
     #[serde(rename = "startTime", deserialize_with = "de_datetime")]
     pub start_time: NaiveDateTime,
     pub title: String,
-    description: String,
+    #[serde_as(as = "NoneAsEmptyString")]
+    description: Option<String>,
     live: bool,
 }
 
 impl Listing {
     fn is_repeat(&self) -> bool {
-        self.description.trim().ends_with(" e.")
+        self.description
+            .as_ref()
+            .map_or(false, |d| d.trim().ends_with(" e."))
     }
 
     pub fn date(&self) -> String {
@@ -26,11 +31,16 @@ impl Listing {
     }
 
     pub fn description(&self) -> &str {
-        self.description.trim().trim_end_matches(" e.")
+        self.description
+            .as_ref()
+            .map_or("", |d| d.trim().trim_end_matches(" e."))
     }
 
     pub fn has_description(&self) -> bool {
-        !self.description.trim().is_empty()
+        !self
+            .description
+            .as_ref()
+            .map_or(true, |d| d.trim().is_empty())
     }
 
     pub fn status(&self) -> Status {
