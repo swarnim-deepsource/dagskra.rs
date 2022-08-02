@@ -37,10 +37,7 @@ impl Listing {
     }
 
     pub fn has_description(&self) -> bool {
-        !self
-            .description
-            .as_ref()
-            .map_or(true, |d| d.trim().is_empty())
+        self.description.is_some()
     }
 
     pub fn status(&self) -> Status {
