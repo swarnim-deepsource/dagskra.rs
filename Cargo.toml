@@ -1,2 +1,3 @@
 [workspace]
 members = ["dagskra-lib", "dagskra-web"]
+resolver = "2"
