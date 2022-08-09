@@ -11,7 +11,7 @@ pub enum Status {
 #[serde_as]
 #[derive(Debug, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Listing {
-    #[serde(rename = "startTime", deserialize_with = "de_datetime")]
+    #[serde(deserialize_with = "de_datetime", rename = "startTime")]
     pub start_time: NaiveDateTime,
     pub title: String,
     #[serde_as(as = "NoneAsEmptyString")]
