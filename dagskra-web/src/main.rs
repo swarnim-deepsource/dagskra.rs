@@ -10,12 +10,10 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilte
 
 use dagskra_lib::{fetch_schedule, Schedule, Status};
 
-static RUST_LOG: &str = "dagskra_web=debug,tower_http=trace";
-
 #[tokio::main]
 async fn main() {
     tracing_subscriber::registry()
-        .with(EnvFilter::new(std::env::var(RUST_LOG).unwrap_or_default()))
+        .with(EnvFilter::from_default_env())
         .with(tracing_subscriber::fmt::layer())
         .init();
     let app = Router::new()
