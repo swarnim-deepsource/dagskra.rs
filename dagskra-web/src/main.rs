@@ -12,6 +12,7 @@ use dagskra_lib::{fetch_schedule, Schedule, Status};
 
 #[tokio::main]
 async fn main() {
+    dotenv::dotenv().ok();
     tracing_subscriber::registry()
         .with(EnvFilter::from_default_env())
         .with(tracing_subscriber::fmt::layer())
@@ -30,20 +31,28 @@ async fn main() {
 #[derive(Template)]
 #[template(path = "index.html")]
 struct IndexTemplate {
-    author: &'static str,
-    email: &'static str,
+    author: Author,
     schedule: Schedule,
     title: &'static str,
     today: Option<String>,
 }
 
+struct Author {
+    name: &'static str,
+    email: &'static str,
+    // username: &'static str,
+}
+
 async fn index() -> impl IntoResponse {
+    let author = Author {
+        name: "Paul Burt",
+        email: "paul.burt@bbc.co.uk",
+    };
     tracing::debug!("fetching data from external API");
     let schedule = fetch_schedule().await.unwrap_or_default();
     let today = schedule.first().map(|l| l.date());
     let template = IndexTemplate {
-        author: "Paul Burt",
-        email: "paul.burt@bbc.co.uk",
+        author,
         schedule,
         title: "Dagskrá RÚV",
         today,

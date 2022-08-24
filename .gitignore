@@ -1,5 +1,6 @@
 /.*
 !/.deepsource.toml
 !/.editorconfig
+!/.env
 !/.gitignore
 /target/
