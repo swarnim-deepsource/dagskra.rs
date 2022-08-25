@@ -40,7 +40,6 @@ struct IndexTemplate {
 struct Author {
     name: &'static str,
     email: &'static str,
-    // username: &'static str,
 }
 
 async fn index() -> impl IntoResponse {
